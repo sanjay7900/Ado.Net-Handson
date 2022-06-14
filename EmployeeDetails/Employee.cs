@@ -34,23 +34,65 @@ namespace EmployeeDetails
         }
         public string SelectEmployeeById(int id)
         {
+            string sql = "select * from Employee where EmpId=" + id;
+            sqlConnection.Open();
+            SqlCommand cmd =new SqlCommand(sql, sqlConnection);
+            DataTable dt =new DataTable();
+            SqlDataReader sqlDataReader = cmd.ExecuteReader();
+            dt.Load(sqlDataReader);
+            sqlConnection.Close();
+            for(int i = 0; i < dt.Rows.Count; i++)
+            {
+                for(int j = 0; j < dt.Columns.Count; j++)
+                {
+                    Console.Write(dt.Rows[i][j]+" ") ;
+                }
+            }
+
+
 
             
 
             return "";
         }
 
-        public string DeleteEmployee()
+        public string DeleteEmployee(int empid)
         {
-            return "";
+            string deleteQuery = "delete from Employee where EmpId="+empid;
+            SqlCommand cmd = new SqlCommand(deleteQuery, sqlConnection);
+            sqlConnection.Open();
+           int status= cmd.ExecuteNonQuery();
+            sqlConnection.Close();
+            if (status == 0)
+            {
+                return "Not Deteted";
+            }
+            return " Deleted";
         }
-        public string UpdateEmployee()
+        public string UpdateEmployee( string changeName,int EmpId)
         {
-            return "";
+            string sql = "update  Employee set EmpName='"+changeName+"' Where EmpId="+EmpId+"";
+            sqlConnection.Open();
+            SqlCommand cmd = new SqlCommand(sql, sqlConnection);
+            int status = cmd.ExecuteNonQuery();
+            sqlConnection.Close ();
+            if(status == 0)
+            {
+                return "Not Updated";
+            }
+            return "Updated";
         }
-        public string SelectEmployes()
+        public DataTable SelectEmployes()
         {
-            return "";
+            string sql = "select * from Employee";
+            sqlConnection.Open();
+            SqlCommand cmd = new SqlCommand(sql, sqlConnection);
+            SqlDataReader reader = cmd.ExecuteReader();
+            DataTable table = new DataTable();
+            table.Load(reader);
+            sqlConnection.Close();
+            return table;
+            
         }
 
     }

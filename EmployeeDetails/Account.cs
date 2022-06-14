@@ -23,7 +23,7 @@ namespace EmployeeDetails
             int age=Convert.ToInt32(Console.ReadLine());
             Console.WriteLine("Enter the Account Holder Address");
             string address =Console.ReadLine();
-            string Query = "insert into Employee values(" + accid + ",'" + name + "'," + age + ",'" + address+"')";
+            string Query = "insert into Account values(" + accid + ",'" + name + "'," + age + ",'"+ address+"')";
 
             SqlCommand cmd = new SqlCommand(Query, sqlConnection);
             sqlConnection.Open();
@@ -34,20 +34,64 @@ namespace EmployeeDetails
         }
         public string SelectAccountById(int id)
         {
+            string sql = "select * from Account where AccId=" + id;
+            sqlConnection.Open();
+            SqlCommand cmd = new SqlCommand(sql, sqlConnection);
+            DataTable dt = new DataTable();
+            SqlDataReader sqlDataReader = cmd.ExecuteReader();
+            dt.Load(sqlDataReader);
+            sqlConnection.Close();
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                for (int j = 0; j < dt.Columns.Count; j++)
+                {
+                    Console.Write(dt.Rows[i][j] + " ");
+                }
+            }
+
+
+
+
+
             return "";
         }
 
-        public string DeleteAccount()
+        public string DeleteAccount(int empid)
         {
-            return "";
+            string deleteQuery = "delete from Account where EmpId=" + empid;
+            SqlCommand cmd = new SqlCommand(deleteQuery, sqlConnection);
+            sqlConnection.Open();
+            int status = cmd.ExecuteNonQuery();
+            sqlConnection.Close();
+            if (status == 0)
+            {
+                return "Not Deteted";
+            }
+            return " Deleted";
         }
-        public string UpdateAccount()
+        public string UpdateAccount(string changeName,int EmpId)
         {
-            return "";
+            string sql = "update  Account set AccHolderName='" + changeName +"' Where AccId=" + EmpId + "";
+            sqlConnection.Open();
+            SqlCommand cmd = new SqlCommand(sql, sqlConnection);
+            int status = cmd.ExecuteNonQuery();
+            sqlConnection.Close();
+            if (status == 0)
+            {
+                return "Not Updated";
+            }
+            return "Updated";
         }
-        public string SelectAccounts()
+        public DataTable SelectAccounts()
         {
-            return "";
+            string sql = "select * from Account";
+            sqlConnection.Open();
+            SqlCommand cmd =new SqlCommand(sql, sqlConnection);
+            SqlDataReader reader = cmd.ExecuteReader();
+            DataTable table = new DataTable();
+            table.Load(reader);
+            sqlConnection.Close();
+            return table;
         }
 
     }
